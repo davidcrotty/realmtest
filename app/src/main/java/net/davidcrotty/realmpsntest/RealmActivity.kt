@@ -2,15 +2,10 @@ package net.davidcrotty.realmpsntest
 
 import android.content.Context
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import io.realm.Realm
-import io.realm.RealmModel
-import io.realm.RealmObject
 import io.realm.SyncUser
-import io.realm.annotations.PrimaryKey
-import io.realm.annotations.RealmClass
-import io.realm.annotations.Required
 import java.util.*
 
 
@@ -28,9 +23,14 @@ class RealmActivity : AppCompatActivity() {
         syncRealm()
         val realm = Realm.getDefaultInstance()
         val content = Content(UUID.randomUUID().toString(), "test")
-        realm.beginTransaction()
-        realm.copyToRealm(content)
-        realm.close()
+        realm.executeTransaction { realm ->
+            realm.copyToRealm(content)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Realm.getDefaultInstance().close()
     }
 
     private fun syncRealm() {
