@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'realm-android'
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -13,6 +12,16 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        def host = "psntest.de1a.cloud.realm.io"
+
+        buildConfigField "String", "REALM_INSTANCE", "\"$host\""
+        buildConfigField "String", "REALM_AUTH", "\"https://$host/auth\""
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
     }
     buildTypes {
         release {
@@ -20,6 +29,10 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+realm {
+    syncEnabled = true
 }
 
 dependencies {
